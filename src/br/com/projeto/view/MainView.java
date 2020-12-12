@@ -5,14 +5,24 @@
  */
 package br.com.projeto.view;
 
+import br.com.projeto.dao.SitesDAO;
+import br.com.projeto.model.Sites;
+import br.com.projeto.model.Utilitarios;
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,31 +31,30 @@ import javax.swing.table.DefaultTableModel;
  * @author Tutu
  */
 public class MainView extends javax.swing.JFrame {
-    
+
     double preco;
     DefaultTableModel carrinho;
-    
-    public void getFiles(){
-        // Importando arquivos txt para a tabela:
-        String filePath = "C:\\Users\\Tutu\\Documents\\SalvaSites\\txtfile.txt";
-        File file = new File(filePath);
-        try{
-            FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
-        
-        carrinho = (DefaultTableModel) tabelaSites.getModel();
-        
-        Object[] lines = br.lines().toArray();
-        
-        for(int i = 0; i < lines.length; i ++){
-            String[] row = lines[i].toString().split(" ");
-            carrinho.addRow(row);
-        }
-        }catch(IOException ex) {
-            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
+//    public void getFiles(){
+//        // Importando arquivos txt para a tabela:
+//        String filePath = "C:\\Users\\Tutu\\Documents\\SalvaSites\\txtfile.txt";
+//        File file = new File(filePath);
+//        try{
+//            FileReader fr = new FileReader(file);
+//        BufferedReader br = new BufferedReader(fr);
+//        
+//        carrinho = (DefaultTableModel) tabelaSites.getModel();
+//        
+//        Object[] lines = br.lines().toArray();
+//        
+//        for(int i = 0; i < lines.length; i ++){
+//            String[] row = lines[i].toString().split(" ");
+//            carrinho.addRow(row);
+//        }
+//        }catch(IOException ex) {
+//            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
     /**
      * Creates new form MainView
      */
@@ -66,32 +75,49 @@ public class MainView extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jPanel1 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
+        painel_dados = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtSite = new javax.swing.JTextField();
         txtEndereco = new javax.swing.JTextField();
-        btnSalvar = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtDescricao = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtProduto = new javax.swing.JTextField();
-        btnSalvar1 = new javax.swing.JButton();
+        btnAbrir = new javax.swing.JButton();
+        brnImprimir = new javax.swing.JButton();
+        btnAbrir1 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        txtPreco = new javax.swing.JTextField();
+        txtData = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaSites = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtArea = new javax.swing.JTextArea();
+        jPanel2 = new javax.swing.JPanel();
+        btnBancoD = new javax.swing.JButton();
+        btnDataBase = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
+        btnSalvar1 = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnTesSaveTxt = new javax.swing.JButton();
         btnText = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
 
         jMenu1.setText("jMenu1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Salva Sites");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
-        jPanel1.setBackground(new java.awt.Color(153, 159, 225));
+        jPanel1.setBackground(new java.awt.Color(51, 204, 255));
 
         jLabel4.setFont(new java.awt.Font("Trebuchet MS", 3, 24)); // NOI18N
         jLabel4.setText("Salvar Sites e Endereços");
@@ -113,14 +139,170 @@ public class MainView extends javax.swing.JFrame {
                 .addContainerGap(47, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados do Site"));
+        painel_dados.setBackground(new java.awt.Color(255, 255, 255));
+        painel_dados.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados do Site"));
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel1.setText("Nome do Site:");
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel2.setText("Endereço do Site:");
+
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel3.setText("Descrição do Site:");
+
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel5.setText("Produto:");
+
+        btnAbrir.setText("Abrir Arquivo");
+        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirActionPerformed(evt);
+            }
+        });
+
+        brnImprimir.setText("imprimir");
+        brnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                brnImprimirActionPerformed(evt);
+            }
+        });
+
+        btnAbrir1.setText("Salvar do Text Area");
+        btnAbrir1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrir1ActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel7.setText("Preço:");
+
+        txtData.setEditable(false);
+
+        javax.swing.GroupLayout painel_dadosLayout = new javax.swing.GroupLayout(painel_dados);
+        painel_dados.setLayout(painel_dadosLayout);
+        painel_dadosLayout.setHorizontalGroup(
+            painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painel_dadosLayout.createSequentialGroup()
+                .addGap(78, 78, 78)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(67, Short.MAX_VALUE))
+            .addGroup(painel_dadosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(painel_dadosLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3))
+                    .addGroup(painel_dadosLayout.createSequentialGroup()
+                        .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(painel_dadosLayout.createSequentialGroup()
+                                .addComponent(txtSite, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(76, 76, 76)
+                                .addComponent(btnAbrir1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAbrir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(brnImprimir)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtData)
+                                .addContainerGap())
+                            .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+        );
+        painel_dadosLayout.setVerticalGroup(
+            painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painel_dadosLayout.createSequentialGroup()
+                .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(painel_dadosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAbrir)
+                        .addComponent(brnImprimir)
+                        .addComponent(btnAbrir1)
+                        .addComponent(txtData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(painel_dadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 22, Short.MAX_VALUE))
+        );
+
+        tabelaSites.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Site", "Endereço", "Descrição", "Produto", "Preço"
+            }
+        ));
+        jScrollPane1.setViewportView(tabelaSites);
+        if (tabelaSites.getColumnModel().getColumnCount() > 0) {
+            tabelaSites.getColumnModel().getColumn(0).setMinWidth(10);
+            tabelaSites.getColumnModel().getColumn(0).setPreferredWidth(110);
+            tabelaSites.getColumnModel().getColumn(0).setMaxWidth(200);
+        }
+
+        jPanel4.setBackground(new java.awt.Color(153, 255, 204));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.MatteBorder(null), "Área de Texto"));
+
+        txtArea.setColumns(20);
+        txtArea.setRows(5);
+        jScrollPane2.setViewportView(txtArea);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jPanel2.setBackground(new java.awt.Color(153, 153, 153));
+
+        btnBancoD.setText("Salva no Database");
+        btnBancoD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBancoDActionPerformed(evt);
+            }
+        });
+
+        btnDataBase.setText("Carrega do DB");
+        btnDataBase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDataBaseActionPerformed(evt);
+            }
+        });
 
         btnSalvar.setText("Adicionar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -129,14 +311,6 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
-        btnCancel.setText("Cancelar");
-
-        jLabel3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel3.setText("Descrição do Site:");
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        jLabel5.setText("Produto:");
-
         btnSalvar1.setText("Carregar");
         btnSalvar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,92 +318,14 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtSite, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 622, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 12, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(78, 78, 78)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57)
-                        .addComponent(btnSalvar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSalvar1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
+        btnCancel.setText("Cancelar");
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnCancel, btnSalvar, btnSalvar1});
-
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnSalvar)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSalvar1))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(txtProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCancel, btnSalvar, btnSalvar1});
-
-        tabelaSites.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Nome", "Endereço", "Descrição", "Produto"
+        btnTesSaveTxt.setText("Teste Salvar");
+        btnTesSaveTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTesSaveTxtActionPerformed(evt);
             }
-        ));
-        tabelaSites.setColumnSelectionAllowed(true);
-        jScrollPane1.setViewportView(tabelaSites);
-        tabelaSites.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        if (tabelaSites.getColumnModel().getColumnCount() > 0) {
-            tabelaSites.getColumnModel().getColumn(0).setMinWidth(10);
-            tabelaSites.getColumnModel().getColumn(0).setPreferredWidth(110);
-            tabelaSites.getColumnModel().getColumn(0).setMaxWidth(200);
-        }
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Salvar em..."));
+        });
 
         btnText.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnText.setText("Salvar Text");
@@ -242,6 +338,9 @@ public class MainView extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         jButton2.setText("Salvar em PDF");
 
+        jLabel6.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel6.setText("Como Usar");
+
         jButton3.setText("Dica");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -249,44 +348,62 @@ public class MainView extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel6.setText("Como Usar");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnText)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addContainerGap())
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSalvar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnBancoD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDataBase, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTesSaveTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton3)
+                            .addComponent(jLabel6))))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnText, jButton2});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnBancoD, btnCancel, btnDataBase, btnSalvar, btnSalvar1, btnTesSaveTxt, btnText, jButton2});
 
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnText, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(btnBancoD, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDataBase, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalvar)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalvar1)
+                .addGap(18, 18, 18)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnTesSaveTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnText, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addContainerGap())
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnText, jButton2});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCancel, btnSalvar, btnSalvar1});
+
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnText, jButton2});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -294,24 +411,31 @@ public class MainView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(painel_dados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(painel_dados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
         pack();
@@ -320,102 +444,261 @@ public class MainView extends javax.swing.JFrame {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         // TODO add your handling code here:
-        
-        
-        
+
         carrinho = (DefaultTableModel) tabelaSites.getModel();
 
-            carrinho.addRow(new Object[]{
-                txtSite.getText(),
-                txtEndereco.getText(),
-                txtDescricao.getText(),
-                txtProduto.getText()
-                
-                
-            });
-        
-        
-        
-        
-        
-        
-        
-        
+        carrinho.addRow(new Object[]{
+            txtSite.getText(),
+            txtEndereco.getText(),
+            txtDescricao.getText(),
+            txtProduto.getText()
+
+        });
+
+
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnSalvar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvar1ActionPerformed
         // Importando arquivos txt para a tabela:
         String filePath = "C:\\Users\\Tutu\\Documents\\SalvaSites\\txtfile.txt";
         File file = new File(filePath);
-        try{
+
+        try {
             FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
-        
-        carrinho = (DefaultTableModel) tabelaSites.getModel();
-        
-        Object[] lines = br.lines().toArray();
-        
-        for(int i = 0; i < lines.length; i ++){
-            String[] row = lines[i].toString().split(" ");
-            carrinho.addRow(row);
-        }
-        }catch(IOException ex) {
+            BufferedReader br = new BufferedReader(fr);
+
+            carrinho = (DefaultTableModel) tabelaSites.getModel();
+
+            Object[] lines = br.lines().toArray();
+
+            for (int i = 0; i < lines.length; i++) {
+                String[] row = lines[i].toString().split(" ");
+                carrinho.addRow(row);
+            }
+        } catch (IOException ex) {
             Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-        }  
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        }
+
+
     }//GEN-LAST:event_btnSalvar1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
-        JOptionPane.showMessageDialog(null,"Preencha todos os campos e precione o Botão Adicionar!");
-        
-        
-        
-        
+
+        JOptionPane.showMessageDialog(null, "Preencha todos os campos e precione o Botão Adicionar!");
+
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTextActionPerformed
         // TODO add your handling code here:
-        String filePath = "C:\\Users\\Tutu\\Documents\\SalvaSites\\txtfile.txt";
-        
+        String filePath = "C:\\Users\\Tutu\\Documents\\NetBeansProjects\\SalvaSites\\DadosBd\\txtfile.txt";
+
         File file = new File(filePath);
-        
+
         FileWriter fw;
+        PrintWriter pw;
         try {
             fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
-            
-            for (int i = 0; i <tabelaSites.getRowCount(); i++){
-                for(int j = 0; j <tabelaSites.getColumnCount(); j++){
-                bw.write(tabelaSites.getValueAt(i, j).toString() + "  ");
-            }
-                bw.newLine();
-                bw.close();
+            //BufferedWriter bw = new BufferedWriter(fw);
+            pw = new PrintWriter(fw);
+
+            for (int i = 0; i < tabelaSites.getRowCount(); i++) {
+                for (int j = 0; j < tabelaSites.getColumnCount(); j++) {
+                    pw.write(tabelaSites.getValueAt(i, j).toString() + "  ");
+                }
+//                pw.newLine();
+                pw.close();
                 fw.close();
-        }
+            }
             JOptionPane.showMessageDialog(null, "Adicionado ao txt!");
+            txtSite.setText("");
+            txtEndereco.setText("");
+            txtDescricao.setText("");
+            txtProduto.setText("");
+            pw.write("============================//======================");
         } catch (IOException ex) {
             Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-        
-        
-        
-        
-        
-        
+
+
     }//GEN-LAST:event_btnTextActionPerformed
 
+    private void btnTesSaveTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesSaveTxtActionPerformed
+        // Salva no bloco de notas:
+
+        JFileChooser fc = new JFileChooser();
+        fc.showSaveDialog(this);
+
+        File f = fc.getSelectedFile();
+        PrintWriter pw = null;
+
+        try {
+            try (FileWriter fw = new FileWriter(f)) {
+                pw = new PrintWriter(fw);
+                String nome = "Nome do Site: " + txtSite.getText();
+                String endereco = "Nome do Endereço: " + txtEndereco.getText();
+                String descricao = "Nome do Descrição: " + txtDescricao.getText();
+                String produto = "Nome do Descrição: " + txtProduto.getText();
+
+                fw.write(nome);
+                fw.write(endereco);
+                fw.write(descricao);
+                fw.write(produto);
+                fw.close();
+            }
+            txtSite.setText("");
+            txtEndereco.setText("");
+            txtDescricao.setText("");
+            txtProduto.setText("");
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+
+
+    }//GEN-LAST:event_btnTesSaveTxtActionPerformed
+
+    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+        // Abrir arquivo apartir de uma janela:
+
+        JFileChooser fc = new JFileChooser();
+        fc.showOpenDialog(this);
+
+        File f = fc.getSelectedFile();
+
+        try {
+            FileReader fr = new FileReader(f);
+            BufferedReader br = new BufferedReader(fr);
+
+            String texto = br.toString();
+
+            txtArea.read(br, null);
+            txtArea.requestFocus();
+
+            br.close();
+
+//            carrinho = (DefaultTableModel) tabelaSites.getModel();
+//
+//            Object[] lines = br.lines().toArray();
+//
+//            for (int i = 0; i < lines.length; i++) {
+//                String[] row = lines[i].toString().split(" ");
+//                carrinho.addRow(row);
+//            }
+        } catch (IOException ex) {
+            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+        }
+
+
+    }//GEN-LAST:event_btnAbrirActionPerformed
+
+    private void brnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnImprimirActionPerformed
+        // TODO add your handling code here:
+
+        JFileChooser fc = new JFileChooser();
+        fc.showOpenDialog(this);
+
+        File f = fc.getSelectedFile();
+
+        Desktop desktop = Desktop.getDesktop();
+
+        try {
+            FileReader fr = new FileReader(f);
+            desktop.print(f);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }//GEN-LAST:event_brnImprimirActionPerformed
+
+    private void btnAbrir1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrir1ActionPerformed
+        // Salva o conteudo do Text Area:
+        JFileChooser fc = new JFileChooser();
+        fc.showOpenDialog(this);
+
+        File f = fc.getSelectedFile();
+
+        try {
+            FileWriter fr = new FileWriter(f);
+            BufferedWriter br = new BufferedWriter(fr);
+
+            String texto = br.toString();
+
+            txtArea.write(br);
+            txtArea.requestFocus();
+
+            br.close();
+
+//            
+        } catch (IOException ex) {
+            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, ex);
+        }
+
+
+    }//GEN-LAST:event_btnAbrir1ActionPerformed
+
+    private void btnBancoDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBancoDActionPerformed
+        // TODO add your handling code here:
+        // Botao salvar
+        try {
+            Sites obj = new Sites();
+            obj.setSite(txtSite.getText());
+            obj.setDescricao(txtDescricao.getText());
+            obj.setProduto(txtProduto.getText());            
+            obj.setEndereco(txtEndereco.getText());
+            //obj.setPreco((txtPreco.getText()));
+
+            SitesDAO dao = new SitesDAO();
+            dao.cadastrarSites(obj);
+
+            //new Utilitarios().LimpaTela(painel_dados));
+        } catch (Exception e) {
+            System.out.println("Erro: " + e);
+        }
+    }//GEN-LAST:event_btnBancoDActionPerformed
+
+    private void btnDataBaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataBaseActionPerformed
+        // Carrega a lista do database na tablea:
+        
+        listar();
+        
+        
+    }//GEN-LAST:event_btnDataBaseActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        // Carrega a data atual do sistema
+        Date agora = new Date();
+        SimpleDateFormat dataBr = new SimpleDateFormat("dd/MM/yyyy");
+        String dataFormatada = dataBr.format(agora);
+        txtData.setText(dataFormatada);
+  
+    }//GEN-LAST:event_formWindowActivated
+
+    //Metodo Listar na tabela
+    public void listar() {
+
+        SitesDAO dao = new SitesDAO();
+        List<Sites> lista = dao.listarSites();
+        DefaultTableModel dados = (DefaultTableModel) tabelaSites.getModel();
+        dados.setNumRows(0);
+
+        for (Sites c : lista) {
+            dados.addRow(new Object[]{
+                c.getSite(),
+                c.getEndereco(),
+                c.getDescricao(),
+                c.getProduto(),
+                c.getPreco()
+              
+            });
+        }
+
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -427,7 +710,7 @@ public class MainView extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -449,12 +732,20 @@ public class MainView extends javax.swing.JFrame {
                 new MainView().setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton brnImprimir;
+    private javax.swing.JButton btnAbrir;
+    private javax.swing.JButton btnAbrir1;
+    private javax.swing.JButton btnBancoD;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnDataBase;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnSalvar1;
+    private javax.swing.JButton btnTesSaveTxt;
     private javax.swing.JButton btnText;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -464,14 +755,20 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel painel_dados;
     private javax.swing.JTable tabelaSites;
+    private javax.swing.JTextArea txtArea;
+    private javax.swing.JTextField txtData;
     private javax.swing.JTextField txtDescricao;
     private javax.swing.JTextField txtEndereco;
+    private javax.swing.JTextField txtPreco;
     private javax.swing.JTextField txtProduto;
     private javax.swing.JTextField txtSite;
     // End of variables declaration//GEN-END:variables

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.com.projeto.model;
 
 /**
@@ -11,21 +6,11 @@ package br.com.projeto.model;
  */
 public class Sites {
     
-    //Atributos
-    int id;
     String site;
     String endereco;
     String descricao;
     String produto;
     double preco;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getSite() {
         return site;
@@ -66,7 +51,6 @@ public class Sites {
     public void setPreco(double preco) {
         this.preco = preco;
     }
-    
     
     
     
